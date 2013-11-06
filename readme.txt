@@ -1,5 +1,5 @@
 === SP Responsive header image slider ===
-Contributors: SP Technolab
+Contributors: SP Technolab, anoopranawat 
 Tags: Responsive image slider, mobile tuch image slider, image slider, Responsive header image slider, header image slider, Responsive banner slider, banner slider, Responsive header banner slider, header banner slider, Responsive slideshow,  slideshow, custom post type, header image slideshow
 Requires at least: 3.1
 Tested up to: 3.7
