@@ -54,7 +54,7 @@ You can also display this Image slider inside your page with following shortcode
 
 1. Responsive header image slider view
 2. Add new image
-3. All images
+3. Setting page
 
 == Changelog ==
 
