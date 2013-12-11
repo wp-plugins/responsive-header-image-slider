@@ -3,7 +3,7 @@
 Plugin Name: SP Responsive header image slider
 Plugin URL: http://sptechnolab.com
 Description: A simple Responsive header image slider
-Version: 1.0
+Version: 1.1
 Author: SP Technolab
 Author URI: http://sptechnolab.com
 Contributors: SP Technolab
@@ -35,7 +35,7 @@ function sp_responsiveslider_setup_post_types() {
 	$responsiveslider_args = array(
 		'labels' 			=> $responsiveslider_labels,
 		'public' 			=> true,
-		'publicly_queryable'=> true,
+		'publicly_queryable'		=> true,
 		'show_ui' 			=> true,
 		'show_in_menu' 		=> true,
 		'query_var' 		=> true,
@@ -48,8 +48,121 @@ function sp_responsiveslider_setup_post_types() {
 	register_post_type( 'sp_responsiveslider', apply_filters( 'sp_faq_post_type_args', $responsiveslider_args ) );
 
 }
-
 add_action('init', 'sp_responsiveslider_setup_post_types');
+
+
+add_action( 'admin_init', 'rsris_add_metaboxes' );
+function rsris_add_metaboxes() {
+
+  // This will register our metabox for all post types
+  $post_types = get_post_types();
+  // This will remove the meta box from our slides post type
+  unset($post_types['rsris_slides']);
+      foreach ( $post_types as $post_type ){
+        // Box for your posts for inserting your slider element.
+	 add_meta_box('rsris_slide_link_box', 'LINK URL', 'rsris_slide_link_box', $post_type , 'normal', 'core');
+        //add_meta_box('rsris_multipeselect_metabox', 'LINK URL', 'rsris_multipeselect_metabox', $post_type, 'normal', 'core');
+      }
+  // Box for inserting the link the slide should link to.
+  add_meta_box('rsris_slide_link_box', 'Slide link', 'rsris_slide_link_box', 'rsris_slides', 'normal', 'core');
+  add_meta_box('rsris_slide_embed_box', 'Youtube Share link', 'rsris_slide_embed_box', 'rsris_slides', 'normal', 'core');
+}
+ 
+// Our metabox for choosing the slides
+function rsris_multipeselect_metabox() {
+   global $post;
+   
+   wp_nonce_field( plugin_basename( __FILE__ ), 'rsris_ms_metabox_nonce' );
+   
+   $rsris_ms_posts = get_posts( array(
+   'post_type' => 'rsris_slides',
+   'numberposts' => -1
+
+   ));
+   $rsris_slides = get_post_meta( $post->ID, 'rsris_slide', true );
+
+   $rsris_ms_output = '<div class="rsris-select-wrapper"><div class="rsris-select-left"><div class="rsris-search-field-wrapper">Link Url:<input type="text" id="rsris-search-field" placeholder="http://"></div><ul class="rsris-items">';
+   
+   $rsris_ms_output .= '</ul></div></div>';
+   $rsris_ms_output .= '<div style="clear:both;"></div>';
+   echo $rsris_ms_output;
+}
+ 
+// Save data from meta box
+add_action('save_post', 'rsris_checkbox_metabox_save');
+function rsris_checkbox_metabox_save($post_id) {
+  // verify nonce
+  if ( !wp_verify_nonce( $_POST['rsris_ms_metabox_nonce'], plugin_basename( __FILE__ ) ) )
+        return;
+ 
+  // check autosave
+  if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
+        return;
+ 
+  // check permissions
+  if (!current_user_can('edit_post', $post_id))
+    return;
+ 
+        $old['rsris_slide'] = get_post_meta( $post_id, 'rsris_slide', true );
+        $new['rsris_slide'] = $_POST['rsris_slide'];
+       
+        if ( $new['rsris_slide'] && $new['rsris_slide'] != $old['rsris_slide'] ) {
+          update_post_meta($post_id, 'rsris_slide', $new['rsris_slide']);
+        } elseif ( '' == $new['rsris_slide'] && $old['rsris_slide'] ) {
+          delete_post_meta($post_id, 'rsris_slide', $old['rsris_slide']);
+        }
+}
+
+
+/**
+* Register meta boxes for inserting a links and embeds
+*/
+function rsris_slide_link_box() {
+  global $post;
+  $rsris_slide_link = get_post_meta( $post->ID, 'rsris_slide_link', true );
+  
+  wp_nonce_field( plugin_basename( __FILE__ ), 'rsris_slide_link_box_nounce' );
+  
+  $rsris_slide_link_output .= '<input type="text" name="rsris_slide_link" id="rsris_slide_link" class="widefat" value="'.$rsris_slide_link.'" />';
+  	echo $rsris_slide_link_output;
+}
+
+function rsris_slide_embed_box() {
+  global $post;
+  $rsris_slide_embed = get_post_meta( $post->ID, 'rsris_slide_embed', true );
+  
+  wp_nonce_field( plugin_basename( __FILE__ ), 'rsris_slide_embed_box_nounce' );
+  
+  $rsris_slide_embed_output = rsris_embed_video( $post->ID, 260, 120);
+  $rsris_slide_embed_output .= '<label for="rsris_slide_embed"><span class="howto">Copy and paste the link to your YouTube video</span></label>';
+  $rsris_slide_embed_output .= '<input type="text" name="rsris_slide_embed" id="rsris_slide_embed" class="widefat" value="'.$rsris_slide_embed.'" />';
+  echo $rsris_slide_embed_output;
+}
+
+
+
+add_action( 'save_post', 'rsris_link_save' );  
+function rsris_link_save( $post_id )  
+{  
+    // Bail if we're doing an auto save  
+    if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return; 
+     
+    // verify nonce
+    if ( !wp_verify_nonce( $_POST['rsris_slide_link_box_nounce'], plugin_basename( __FILE__ ) ) )
+        return; 
+     
+    // if our current user can't edit this post, bail  
+    if( !current_user_can( 'edit_post' ) ) return; 
+
+    if( isset( $_POST['rsris_slide_link'] ) )  
+        update_post_meta( $post_id, 'rsris_slide_link', wp_kses( $_POST['rsris_slide_link']) );
+
+    if( isset( $_POST['rsris_slide_embed'] ) )  
+        update_post_meta( $post_id, 'rsris_slide_embed', wp_kses( $_POST['rsris_slide_embed']) );
+
+}
+
+
 /*
  * Add [sp_responsiveslider limit="-1"] shortcode
  *
@@ -70,6 +183,7 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
 	ob_start();
 
 	// Create the Query
+
 	$post_type 		= 'sp_responsiveslider';
 	$orderby 		= 'post_date';
 	$order 			= 'DESC';
@@ -82,7 +196,6 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
 								'no_found_rows'  => 1
 								) 
 						);
-	
 	//Get post type count
 	$post_count = $query->post_count;
 	$i = 1;
@@ -96,17 +209,25 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
 	
 	  <div id="slides">
 	<?php
+		
 		// Loop 
 		while ($query->have_posts()) : $query->the_post();
+
 		?>
-		 
+		<?php $respslideroption = 'responsiveslider_option';
+	$respslideroptionadmin = get_option( $respslideroption, $default ); 
+	$link = $respslideroptionadmin['link'];  
+		 	if ($link == '' || $link == '0'  )
+		{?>
+		<a href="<?php echo get_post_meta( get_the_ID(),'rsris_slide_link', true ) ?>" target="_blank">
+		<?php } ?>
 		<img src="<?php if (has_post_thumbnail( $post->ID ) ): ?>
 				<?php $image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'single-post-thumbnail' ); 
 				 echo $image[0]; endif; ?>"  alt="">
-		
-		 
-		
-		
+				<?php	if ($link == '' || $link == '0'  )
+		{?> 
+				 </a>
+			<?php } ?>
 		<?php
 		$i++;
 		endwhile; ?>
@@ -130,7 +251,6 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
 	return ob_get_clean();
 
 }
-
 	add_shortcode("sp_responsiveslider", "sp_responsiveslider_shortcode");
 
 	wp_register_style( 'respslidercss', plugin_dir_url( __FILE__ ) . 'css/responsiveimgslider.css' );
@@ -138,6 +258,7 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
 
 	wp_enqueue_style( 'respslidercss' );
 	wp_enqueue_script( 'respsliderjs' );
+
 	function sp_responsiveslider_script() {
 	
 	$respslideroption = 'responsiveslider_option';
@@ -236,6 +357,7 @@ class Responsiveimageslidersetting
                 settings_fields( 'respslider_option_group' );   
                 do_settings_sections( 'responsive-slider-setting-admin' );
                 submit_button(); 
+		
             ?>
             </form>
         </div>
@@ -276,7 +398,7 @@ class Responsiveimageslidersetting
             'setting_section_id'
         );     
 		
-		  add_settings_field(
+	add_settings_field(
             'hover_pause', 
             'Auto Play button', 
             array( $this, 'hover_pause_callback' ), 
@@ -285,15 +407,19 @@ class Responsiveimageslidersetting
         );  
 		
 		 add_settings_field(
-            'Set auto play interval', // ID
+            'auto_speed', // ID
             'Auto play speed', // Title 
             array( $this, 'auto_speed_callback' ), // Callback
             'responsive-slider-setting-admin', // Page
             'setting_section_id' // Section           
-        );      
-
-       
-		
+        );  
+		add_settings_field(
+            'link', // ID
+            'Custom link to image', // Title 
+            array( $this, 'link_callback' ), // Callback
+            'responsive-slider-setting-admin', // Page
+            'setting_section_id' // Section           
+        );     		
 			
     }
 
@@ -315,12 +441,10 @@ class Responsiveimageslidersetting
             $new_input['hover_pause'] = absint( $input['hover_pause'] );	
 		
 		 if( isset( $input['auto_speed'] ) )
-            $new_input['auto_speed'] = absint( $input['auto_speed'] );
-
-     
-		
-		
-
+            $new_input['auto_speed'] = absint( $input['auto_speed'] );	
+			
+	 if( isset( $input['link'] ) )
+            $new_input['link'] = absint( $input['link'] );
         return $new_input;
     }
 
@@ -373,10 +497,14 @@ class Responsiveimageslidersetting
         );
 		printf(' ie 500, 1000 milliseconds delay');
     }
-	
-
-	
-
+		public function link_callback()
+    {
+        printf(
+            '<input type="text" id="link" name="responsiveslider_option[link]" value="%s" />',
+            isset( $this->options['link'] ) ? esc_attr( $this->options['link']) : ''
+        );
+		printf(' Enter "0" for <b>True</b> and "1" for <b>False</b>');
+    }
 }
 
 if( is_admin() )

@@ -4,7 +4,7 @@
 	position:relative;
 	z-index:0; }
 
-
+#slides  a img{width:100%; height:auto;}
     #slides .slidesjs-navigation {
       margin-top:5px;
     }

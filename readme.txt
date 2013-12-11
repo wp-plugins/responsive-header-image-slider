@@ -2,7 +2,7 @@
 Contributors: SP Technolab, anoopranawat 
 Tags: responsive image slider, mobile tuch image slider, image slider, responsive header image slider, header image slider, responsive banner slider, banner slider, responsive header banner slider, header banner slider, responsive slideshow,  slideshow, custom post type, header image slideshow
 Requires at least: 3.1
-Tested up to: 3.7
+Tested up to: 3.7.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -20,6 +20,10 @@ Also added "Responsive slider Settings " page under "Setting-> Responsive slider
 To use this plugin just copy and past this code in to your header.php file or template file <code><div class="headerslider"> <?php echo do_shortcode('[sp_responsiveslider limit="-1"]'); ?></div></code>
 
 You can also use this image slider inside your page with following shortcode <code>[sp_responsiveslider limit="-1"] </code>.
+
+= Added new Features =
+* Add custom link to image
+* Enable Or Disable custom link from setting 
 
 = Features include: =
 * Mobile tuch slide
@@ -58,6 +62,11 @@ You can also display this Image slider inside your page with following shortcode
 
 == Changelog ==
 
+= 1.1 =
+* Add custom link to image
+* Enable Or Disable custom link from setting 
+
+
 = 1.0 =
 * Initial release
 * Adds custom post type
@@ -65,6 +74,9 @@ You can also display this Image slider inside your page with following shortcode
 
 
 == Upgrade Notice ==
+= 1.1 =
+* Add custom link to image
+* Enable Or Disable custom link from setting 
 
 = 1.0 =
 Initial release
