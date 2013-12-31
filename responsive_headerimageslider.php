@@ -267,6 +267,8 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
 	$sliderheight = $respslideroptionadmin['slider_height'];	
 	$autoplayspeed = $respslideroptionadmin['auto_speed'];
 	$pausehover = $respslideroptionadmin['hover_pause'];	
+		$auto_play = $respslideroptionadmin['auto_play'];
+		$pagination = $respslideroptionadmin['pagination'];
 		
 		if ($sliderwidth == '' )
 		{
@@ -278,16 +280,29 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
 			$sliderdefultheight = 300;
 		} else { $sliderdefultheight = $sliderheight;
 		}
+		
+		if ($pausehover == '' || $pausehover == '0') 
+		{
+			$pausedefulthover = 'true';
+		} else { $pausedefulthover = 'false';
+		}
+		
 		if ($autoplayspeed == '' )
 		{
 			$autoplaydefultspeed = 2000;
 		} else { $autoplaydefultspeed = $autoplayspeed;
 		}
 		
-		if ($pausehover == '' || $pausehover == '0') 
+		if ($auto_play == '' || $auto_play == '0') 
 		{
-			$pausedefulthover = 'true';
-		} else { $pausedefulthover = 'false';
+			$autopalytrue = 'true';
+		} else { $autopalytrue = 'false';
+		}
+		
+		if ($pagination == '' || $pagination == '0') 
+		{
+			$paginationtrue = 'true';
+		} else { $paginationtrue = 'false';
 		}
 	
 	
@@ -299,10 +314,14 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
         height: <?php echo $sliderdefultheight ; ?>,		
         play: {
           active: <?php echo $pausedefulthover; ?>,
-          auto: false,
+          auto: <?php echo $autopalytrue; ?>,
           interval: <?php echo $autoplaydefultspeed; ?>,
           swap: true
-        }
+        },
+		 pagination: {
+      active: <?php echo $paginationtrue; ?>
+    }
+
       });
     });
 	</script>
@@ -405,6 +424,13 @@ class Responsiveimageslidersetting
             'responsive-slider-setting-admin', 
             'setting_section_id'
         );  
+		add_settings_field(
+            'auto_play', 
+            'Auto Play ', 
+            array( $this, 'auto_play_callback' ), 
+            'responsive-slider-setting-admin', 
+            'setting_section_id'
+        );  
 		
 		 add_settings_field(
             'auto_speed', // ID
@@ -413,6 +439,15 @@ class Responsiveimageslidersetting
             'responsive-slider-setting-admin', // Page
             'setting_section_id' // Section           
         );  
+		
+		 add_settings_field(
+            'pagination', // ID
+            'Pagination', // Title 
+            array( $this, 'pagination_callback' ), // Callback
+            'responsive-slider-setting-admin', // Page
+            'setting_section_id' // Section           
+        );  
+		
 		add_settings_field(
             'link', // ID
             'Custom link to image', // Title 
@@ -438,7 +473,13 @@ class Responsiveimageslidersetting
             $new_input['slider_height'] = sanitize_text_field( $input['slider_height'] );
 			
 		 if( isset( $input['hover_pause'] ) )
-            $new_input['hover_pause'] = absint( $input['hover_pause'] );	
+            $new_input['hover_pause'] = absint( $input['hover_pause'] );
+
+ if( isset( $input['auto_play'] ) )
+            $new_input['auto_play'] = absint( $input['auto_play'] );		
+
+ if( isset( $input['pagination'] ) )
+            $new_input['pagination'] = absint( $input['pagination'] );			
 		
 		 if( isset( $input['auto_speed'] ) )
             $new_input['auto_speed'] = absint( $input['auto_speed'] );	
@@ -489,6 +530,25 @@ class Responsiveimageslidersetting
 		printf(' Enter "0" for <b>True</b> and "1" for <b>False</b>');
     }
 	
+		public function auto_play_callback()
+    {
+        printf(
+            '<input type="text" id="auto_play" name="responsiveslider_option[auto_play]" value="%s" />',
+            isset( $this->options['auto_play'] ) ? esc_attr( $this->options['auto_play']) : ''
+        );
+		printf(' Enter "0" for <b>True</b> and "1" for <b>False</b>');
+    }
+	
+	
+	public function pagination_callback()
+    {
+        printf(
+            '<input type="text" id="pagination" name="responsiveslider_option[pagination]" value="%s" />',
+            isset( $this->options['pagination'] ) ? esc_attr( $this->options['pagination']) : ''
+        );
+		printf(' Enter "0" for <b>True</b> and "1" for <b>False</b>');
+    }
+	
 	public function auto_speed_callback()
     {
         printf(
@@ -497,6 +557,9 @@ class Responsiveimageslidersetting
         );
 		printf(' ie 500, 1000 milliseconds delay');
     }
+	
+	
+	
 		public function link_callback()
     {
         printf(
