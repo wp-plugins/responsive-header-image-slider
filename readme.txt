@@ -2,7 +2,7 @@
 Contributors: SP Technolab, anoopranawat 
 Tags: responsive image slider, mobile tuch image slider, image slider, responsive header image slider, header image slider, responsive banner slider, banner slider, responsive header banner slider, header banner slider, responsive slideshow,  slideshow, custom post type, header image slideshow
 Requires at least: 3.1
-Tested up to: 3.7.1
+Tested up to: 3.9.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
