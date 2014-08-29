@@ -3,7 +3,7 @@ Contributors: sptechnolab, anoopranawat
 Donate link: http://www.slidesjs.com/
 Tags: responsive image slider, mobile tuch image slider, image slider, responsive header image slider, header image slider, responsive banner slider, banner slider, responsive header banner slider, header banner slider, responsive slideshow,  slideshow, custom post type, header image slideshow
 Requires at least: 3.1
-Tested up to: 3.9.1
+Tested up to: 3.9.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -63,7 +63,8 @@ You can also display this Image slider inside your page with following shortcode
 
 1. Responsive header image slider view
 2. Add new image
-3. Setting page
+3. Setting page with slide effect
+4. Setting page with fade effect
 
 == Changelog ==
 
