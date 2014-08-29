@@ -53,7 +53,7 @@ You can also use this image slider inside your page with following shortcode <co
 
 = Are there shortcodes for Image slider items? =
 
-If you want to place image slider into your website header, please copy and paste following code in to your header.php file  <code><div class="headerslider"> <?php echo do_shortcode('[sp_imageslider limit="-1"]'); ?></div>
+If you want to place image slider into your website header, please copy and paste following code in to your header.php file  <code><div class="headerslider"> <?php echo do_shortcode('[sp_imageslider limit="-1"]'); ?></div>  </code>
 
 You can also display this Image slider inside your page with following shortcode <code>[sp_responsiveslider limit="-1"] </code>
 
