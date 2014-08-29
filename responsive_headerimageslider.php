@@ -327,7 +327,7 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
 		
 		if ($slider_pagination_effect == '') 
 		{
-			$slider_pagination_effect_def = 'true';
+			$slider_pagination_effect_def = 'slide';
 		} else { $slider_pagination_effect_def = $slider_pagination_effect;
 		}
 		
