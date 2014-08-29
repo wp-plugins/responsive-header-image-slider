@@ -337,6 +337,18 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
 		} else { $slidernavigation_def = $slidernavigation;
 		}
 		
+		if ($play_effect == '')
+		{
+			$play_effect_def = 'slide';
+		} else { $play_effect_def = $play_effect;
+		}
+		
+		if ($slidernavigationeffect == '') 
+		{
+			$slidernavigationeffect_def = 'slide';
+		} else { $slidernavigationeffect_def = $slidernavigationeffect;
+		}
+		
 		
 	
 	
@@ -353,7 +365,7 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
           auto: <?php echo $auto_play_load_def; ?>,
           interval: <?php echo $autoplaydefultspeed; ?>,
           swap: true,
-		  effect: "<?php echo $play_effect; ?>"
+		  effect: "<?php echo $play_effect_def; ?>"
         },
       effect: { 
 		 slide: {       
@@ -362,7 +374,7 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
     },
 	navigation: {
       active: <?php echo $slidernavigation_def; ?>,
-	  effect: "<?php echo $slidernavigationeffect; ?>"
+	  effect: "<?php echo $slidernavigationeffect_def; ?>"
 	  },
         
 	pagination: {
@@ -370,14 +382,9 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
 	   effect: "<?php echo $slider_pagination_effect_def; ?>"
 	  
     }
-
-      });
-	  
-	
-    });
-	
-
-	</script>
+   }); 
+ });
+</script>
 	<?php
 	}
 add_action('wp_head', 'sp_responsiveslider_script'); 
