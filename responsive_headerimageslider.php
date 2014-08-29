@@ -3,7 +3,7 @@
 Plugin Name: SP Responsive header image slider
 Plugin URL: http://sptechnolab.com
 Description: A simple Responsive header image slider
-Version: 1.2
+Version: 1.3
 Author: SP Technolab
 Author URI: http://sptechnolab.com
 Contributors: SP Technolab
@@ -217,14 +217,14 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
 		<?php $respslideroption = 'responsiveslider_option';
 	$respslideroptionadmin = get_option( $respslideroption, $default ); 
 	$link = $respslideroptionadmin['link'];  
-		 	if ($link == '' || $link == '0'  )
+		 	if ($link == '' || $link == 'yes' )
 		{?>
 		<a href="<?php echo get_post_meta( get_the_ID(),'rsris_slide_link', true ) ?>" target="_blank">
 		<?php } ?>
 		<img src="<?php if (has_post_thumbnail( $post->ID ) ): ?>
 				<?php $image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'single-post-thumbnail' ); 
 				 echo $image[0]; endif; ?>"  alt="">
-				<?php	if ($link == '' || $link == '0'  )
+				<?php	if ($link == '' || $link == 'yes'  )
 		{?> 
 				 </a>
 			<?php } ?>
@@ -264,12 +264,20 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
 	$respslideroption = 'responsiveslider_option';
 	$respslideroptionadmin = get_option( $respslideroption, $default ); 
 	$sliderwidth = $respslideroptionadmin['slider_width']; 
-	$sliderheight = $respslideroptionadmin['slider_height'];	
-	$autoplayspeed = $respslideroptionadmin['auto_speed'];
-	$pausehover = $respslideroptionadmin['hover_pause'];	
-		$auto_play = $respslideroptionadmin['auto_play'];
-		$slide_speed = $respslideroptionadmin['slide_speed'];
-		$pagination = $respslideroptionadmin['pagination'];
+	$sliderheight = $respslideroptionadmin['slider_height'];
+	$sliderstart = $respslideroptionadmin['start'];	
+	$slidernavigation = $respslideroptionadmin['slider_navigation'];
+	$slidernavigationeffect = $respslideroptionadmin['slider_navigation_effect'];
+	
+	$auto_play = $respslideroptionadmin['auto_play'];
+	$slide_speed = $respslideroptionadmin['slide_speed'];
+	$play_effect = $respslideroptionadmin['play_effect'];
+	$auto_play_load = $respslideroptionadmin['auto_play_load'];
+	$autoplayspeed = $respslideroptionadmin['auto_speed'];	
+		
+		
+		$pagination = $respslideroptionadmin['pagination']; 
+		$slider_pagination_effect = $respslideroptionadmin['slider_pagination_effect'];
 		
 		if ($sliderwidth == '' )
 		{
@@ -282,11 +290,15 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
 		} else { $sliderdefultheight = $sliderheight;
 		}
 		
-		if ($pausehover == '' || $pausehover == '0') 
-		{
-			$pausedefulthover = 'true';
-		} else { $pausedefulthover = 'false';
-		}
+		if($auto_play == '')
+			{
+				$auto_play_def = 'true';
+			} else { $auto_play_def  = $auto_play; }  
+			
+		if($auto_play_load == '')
+			{
+				$auto_play_load_def = 'true';
+			} else { $auto_play_load_def  = $auto_play_load; }	
 		
 		if ($autoplayspeed == '' )
 		{
@@ -301,45 +313,58 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
 		}
 		
 		
-		if ($auto_play == '' || $auto_play == '0') 
+		if ($sliderstart == '' ) 
 		{
-			$autopalytrue = 'true';
-		} else { $autopalytrue = 'false';
+			$sliderstartno = '1';
+		} else { $sliderstartno = $sliderstart;
 		}
 		
-		if ($pagination == '' || $pagination == '0') 
+		if ($pagination == '') 
 		{
 			$paginationtrue = 'true';
-		} else { $paginationtrue = 'false';
+		} else { $paginationtrue = $pagination;
 		}
+		
+		
 	
 	
 	?>
 	<script type="text/javascript">
+	
 	 jQuery(function() {
       jQuery('#slides').slidesjs({
         width: <?php echo $sliderdefultwidth ; ?>,
-        height: <?php echo $sliderdefultheight ; ?>,		
+        height: <?php echo $sliderdefultheight ; ?>,
+		start: <?php echo $sliderstartno ; ?>,	
         play: {
-          active: <?php echo $pausedefulthover; ?>,
-          auto: <?php echo $autopalytrue; ?>,
+          active: <?php echo $auto_play_def; ?>,
+          auto: <?php echo $auto_play_load_def; ?>,
           interval: <?php echo $autoplaydefultspeed; ?>,
-          swap: true
+          swap: true,
+		  effect: "<?php echo $play_effect; ?>"
         },
-        effect: {
-		      slide: {
-        			// Slide effect settings.
-      		  speed: <?php echo $slidedefultspeed; ?>
-          		// [number] Speed in milliseconds of the slide animation.
-      		}, 
-   		 },
+      effect: { 
+		 slide: {       
+        speed: <?php echo $slidedefultspeed; ?>          
+      }
+    },
+	navigation: {
+      active: <?php echo $slidernavigation; ?>,
+	  effect: "<?php echo $slidernavigationeffect; ?>"
+	  },
         
-		 pagination: {
-      active: <?php echo $paginationtrue; ?>
+	pagination: {
+      active: <?php echo $paginationtrue; ?>,
+	   effect: "<?php echo $slider_pagination_effect; ?>"
+	  
     }
 
       });
+	  
+	
     });
+	
+
 	</script>
 	<?php
 	}
@@ -433,17 +458,66 @@ class Responsiveimageslidersetting
             'setting_section_id'
         );     
 		
+		 add_settings_field(
+            'start', 
+            'Start', 
+            array( $this, 'slider_start_callback' ), 
+            'responsive-slider-setting-admin', 
+            'setting_section_id'
+        );     
+		
 	add_settings_field(
-            'hover_pause', 
-            'Auto Play button', 
-            array( $this, 'hover_pause_callback' ), 
+            'slider_navigation', 
+            'Navigation', 
+            array( $this, 'slider_navigation_callback' ), 
             'responsive-slider-setting-admin', 
             'setting_section_id'
         );  
+		
+	add_settings_field(
+            'slider_navigation_effect', 
+            'Navigation Effect', 
+            array( $this, 'slider_navigation_effect_callback' ), 
+            'responsive-slider-setting-admin', 
+            'setting_section_id'
+        );  
+
+add_settings_field(
+            'pagination', // ID
+            'Pagination', // Title 
+            array( $this, 'pagination_callback' ), // Callback
+            'responsive-slider-setting-admin', // Page
+            'setting_section_id' // Section           
+        );  
+		
+		 add_settings_field(
+            'slider_pagination_effect', // ID
+            'Pagination Effect', // Title 
+            array( $this, 'slider_pagination_effect_callback' ), // Callback
+            'responsive-slider-setting-admin', // Page
+            'setting_section_id' // Section           
+        ); 		
+		
 		add_settings_field(
             'auto_play', 
-            'Auto Play ', 
+            'Play ', 
             array( $this, 'auto_play_callback' ), 
+            'responsive-slider-setting-admin', 
+            'setting_section_id'
+        );  
+		
+		add_settings_field(
+            'auto_play_load', 
+            ' Auto Play On Page Load', 
+            array( $this, 'auto_play_load_callback' ), 
+            'responsive-slider-setting-admin', 
+            'setting_section_id'
+        );  
+		
+			add_settings_field(
+            'play_effect', 
+            'Play Effect', 
+            array( $this, 'play_effect_callback' ), 
             'responsive-slider-setting-admin', 
             'setting_section_id'
         );  
@@ -464,13 +538,7 @@ class Responsiveimageslidersetting
             'setting_section_id' // Section           
         );   
 		
-		 add_settings_field(
-            'pagination', // ID
-            'Pagination', // Title 
-            array( $this, 'pagination_callback' ), // Callback
-            'responsive-slider-setting-admin', // Page
-            'setting_section_id' // Section           
-        );  
+		 
 		
 		add_settings_field(
             'link', // ID
@@ -491,27 +559,42 @@ class Responsiveimageslidersetting
     {
         $new_input = array();
         if( isset( $input['slider_width'] ) )
-            $new_input['slider_width'] = absint( $input['slider_width'] );
+            $new_input['slider_width'] = sanitize_text_field( $input['slider_width'] );
 
         if( isset( $input['slider_height'] ) )
             $new_input['slider_height'] = sanitize_text_field( $input['slider_height'] );
 			
-		 if( isset( $input['hover_pause'] ) )
-            $new_input['hover_pause'] = absint( $input['hover_pause'] );
+			 if( isset( $input['start'] ) )
+            $new_input['start'] = sanitize_text_field( $input['start'] );	
+			
+		 if( isset( $input['slider_navigation'] ) )
+            $new_input['slider_navigation'] = sanitize_text_field( $input['slider_navigation'] ); 
+			
+		 if( isset( $input['slider_navigation_effect'] ) )
+            $new_input['slider_navigation_effect'] = sanitize_text_field( $input['slider_navigation_effect'] );	
 
- if( isset( $input['auto_play'] ) )
-            $new_input['auto_play'] = absint( $input['auto_play'] );		
+		if( isset( $input['auto_play'] ) )
+            $new_input['auto_play'] = sanitize_text_field( $input['auto_play'] );		
+			
+		if( isset( $input['auto_play_load'] ) )
+            $new_input['auto_play_load'] = sanitize_text_field( $input['auto_play_load'] );	
+			
+			 if( isset( $input['play_effect'] ) )
+            $new_input['play_effect'] = sanitize_text_field( $input['play_effect'] );
 
- if( isset( $input['pagination'] ) )
-            $new_input['pagination'] = absint( $input['pagination'] );			
+		if( isset( $input['pagination'] ) )
+            $new_input['pagination'] = sanitize_text_field( $input['pagination'] );		
+			 
+		 if( isset( $input['slider_pagination_effect'] ) )
+            $new_input['slider_pagination_effect'] = sanitize_text_field( $input['slider_pagination_effect'] );
 		
 		 if( isset( $input['auto_speed'] ) )
-            $new_input['auto_speed'] = absint( $input['auto_speed'] );
+            $new_input['auto_speed'] = sanitize_text_field( $input['auto_speed'] );
        if( isset( $input['slide_speed'] ) )
-            $new_input['slide_speed'] = absint( $input['slide_speed'] );     	
+            $new_input['slide_speed'] = sanitize_text_field( $input['slide_speed'] );     	
 			
 	 if( isset( $input['link'] ) )
-            $new_input['link'] = absint( $input['link'] );
+            $new_input['link'] = sanitize_text_field( $input['link'] );
         return $new_input;
     }
 
@@ -547,33 +630,144 @@ class Responsiveimageslidersetting
 			printf('px');
     }
 	
-	public function hover_pause_callback()
+	  public function slider_start_callback()
     {
         printf(
-            '<input type="text" id="hover_pause" name="responsiveslider_option[hover_pause]" value="%s" />',
-            isset( $this->options['hover_pause'] ) ? esc_attr( $this->options['hover_pause']) : ''
+            '<input type="text" id="start" name="responsiveslider_option[start]" value="%s" />',
+            isset( $this->options['start'] ) ? esc_attr( $this->options['start']) : ''
         );
-		printf(' Enter "0" for <b>True</b> and "1" for <b>False</b>');
+			printf('&nbsp;&nbsp;Set the first slide in the slideshow (Default value is 1)');
     }
 	
-		public function auto_play_callback()
+	public function slider_navigation_callback()
     {
         printf(
-            '<input type="text" id="auto_play" name="responsiveslider_option[auto_play]" value="%s" />',
-            isset( $this->options['auto_play'] ) ? esc_attr( $this->options['auto_play']) : ''
+            '<input type="radio" id="slider_navigation" name="responsiveslider_option[slider_navigation]" value="true" /> True 
+			<input type="radio" id="slider_navigation1" name="responsiveslider_option[slider_navigation]" value="false"  /> False',
+            isset( $this->options['slider_navigation'] ) ? esc_attr( $this->options['slider_navigation']) : ''
         );
-		printf(' Enter "0" for <b>True</b> and "1" for <b>False</b>');
-    }
+		printf(' &nbsp;&nbsp;&nbsp;&nbsp;<b>(Next and previous button settings)</b>');
+		
+	?><script type="text/javascript"><?php
+		if($this->options['slider_navigation']=='true'){?>
+			document.getElementById("slider_navigation").checked = true; 
+		<?php } else if($this->options['slider_navigation']=='false') { ?>
+			document.getElementById("slider_navigation1").checked = true; <?php } ?>
+	</script>
+	<?php	
+    } 
 	
+		public function slider_navigation_effect_callback()
+    {
+        printf(
+            '<input type="radio" id="slider_navigation_effect" name="responsiveslider_option[slider_navigation_effect]" value="slide" /> Slide 
+			<input type="radio" id="slider_navigation_effect1" name="responsiveslider_option[slider_navigation_effect]" value="fade"  /> Fade' ,
+            isset( $this->options['slider_navigation_effect'] ) ? esc_attr( $this->options['slider_navigation_effect']) : ''
+        );
+		printf(' &nbsp;&nbsp;&nbsp;&nbsp; <b>(Effect for Navigation)</b>');
+		
+	?><script type="text/javascript"><?php
+		if($this->options['slider_navigation_effect']=='slide'){?>
+			document.getElementById("slider_navigation_effect").checked = true; 
+		<?php } else if($this->options['slider_navigation_effect']=='fade') { ?>
+			document.getElementById("slider_navigation_effect1").checked = true; <?php } ?>
+	</script>
+	<?php	
+    }
 	
 	public function pagination_callback()
     {
         printf(
-            '<input type="text" id="pagination" name="responsiveslider_option[pagination]" value="%s" />',
+            '<input type="radio" id="pagination" name="responsiveslider_option[pagination]" value="true" /> True 
+			<input type="radio" id="pagination1" name="responsiveslider_option[pagination]" value="false"  /> False' ,
             isset( $this->options['pagination'] ) ? esc_attr( $this->options['pagination']) : ''
         );
-		printf(' Enter "0" for <b>True</b> and "1" for <b>False</b>');
+		printf('&nbsp;&nbsp;&nbsp;&nbsp; <b>(Pagination settings)</b>');
+		
+	?><script type="text/javascript"><?php
+		if($this->options['pagination']=='true'){?>
+			document.getElementById("pagination").checked = true; 
+		<?php } else if($this->options['pagination']=='false') { ?>
+			document.getElementById("pagination1").checked = true; <?php } ?>
+	</script>
+	<?php	
     }
+	
+		public function slider_pagination_effect_callback()
+    {
+        printf(
+            '<input type="radio" id="slider_pagination_effect" name="responsiveslider_option[slider_pagination_effect]" value="slide" /> Slide 
+			<input type="radio" id="slider_pagination_effect1" name="responsiveslider_option[slider_pagination_effect]" value="fade"  /> Fade' ,
+            isset( $this->options['slider_pagination_effect'] ) ? esc_attr( $this->options['slider_pagination_effect']) : ''
+        );
+		printf('&nbsp;&nbsp;&nbsp;&nbsp; <b>(Effect for Pagination)</b>');
+		
+	?><script type="text/javascript"><?php
+		if($this->options['slider_pagination_effect']=='slide'){?>
+			document.getElementById("slider_pagination_effect").checked = true; 
+		<?php } else if($this->options['slider_pagination_effect']=='fade') { ?>
+			document.getElementById("slider_pagination_effect1").checked = true; <?php } ?>
+	</script>
+	<?php	
+    }
+	
+
+	
+	public function auto_play_callback() 
+    {
+        printf(
+            'Active : <input type="radio" id="auto_play" name="responsiveslider_option[auto_play]" value="true" /> True 
+			<input type="radio" id="auto_play1" name="responsiveslider_option[auto_play]" value="false"  /> False' ,
+            isset( $this->options['auto_play'] ) ? esc_attr( $this->options['auto_play']) : ''
+        );
+		printf('&nbsp;&nbsp;&nbsp;&nbsp; <b>(Play and stop button setting.)</b>');
+		
+	?><script type="text/javascript"><?php
+		if($this->options['auto_play']=='true'){?>
+			document.getElementById("auto_play").checked = true; 
+		<?php } else if($this->options['auto_play']=='false') { ?>
+			document.getElementById("auto_play1").checked = true; <?php } ?>
+	</script>
+	<?php	
+    }  
+	
+		public function auto_play_load_callback() 
+    {
+        printf(
+            '<input type="radio" id="auto_play_load" name="responsiveslider_option[auto_play_load]" value="true" /> True 
+			<input type="radio" id="auto_play_load1" name="responsiveslider_option[auto_play_load]" value="false"  /> False' ,
+            isset( $this->options['auto_play_load'] ) ? esc_attr( $this->options['auto_play_load']) : ''
+        );
+		printf('&nbsp;&nbsp;&nbsp;&nbsp; <b>(Start playing the slideshow on load)</b>');
+		
+	?><script type="text/javascript"><?php
+		if($this->options['auto_play_load']=='true'){?>
+			document.getElementById("auto_play_load").checked = true; 
+		<?php } else if($this->options['auto_play_load']=='false') { ?>
+			document.getElementById("auto_play_load1").checked = true; <?php } ?>
+	</script>
+	<?php	
+    }
+	
+		public function play_effect_callback() 
+    {
+        printf(
+            '<input type="radio" id="play_effect" name="responsiveslider_option[play_effect]" value="slide" /> Slide 
+			<input type="radio" id="play_effect1" name="responsiveslider_option[play_effect]" value="fade"  /> Fade' ,
+            isset( $this->options['play_effect'] ) ? esc_attr( $this->options['play_effect']) : ''
+        );
+		printf('&nbsp;&nbsp;&nbsp;&nbsp; <b>(Play effect setting.)</b>');
+		
+	?><script type="text/javascript"><?php
+		if($this->options['play_effect']=='slide'){?>
+			document.getElementById("play_effect").checked = true; 
+		<?php } else if($this->options['play_effect']=='fade') { ?>
+			document.getElementById("play_effect1").checked = true; <?php } ?>
+	</script>
+	<?php	
+    }
+	
+	
 	
 	public function auto_speed_callback()
     {
@@ -594,15 +788,30 @@ class Responsiveimageslidersetting
 		printf(' ie 500, 1000 milliseconds ');
     }
 	
-		public function link_callback()
+	public function link_callback() 
     {
         printf(
-            '<input type="text" id="link" name="responsiveslider_option[link]" value="%s" />',
+            '<input type="radio" id="link" name="responsiveslider_option[link]" value="yes" /> Yes 
+			<input type="radio" id="link1" name="responsiveslider_option[link]" value="no"  /> No' ,
             isset( $this->options['link'] ) ? esc_attr( $this->options['link']) : ''
         );
-		printf(' Enter "0" for <b>True</b> and "1" for <b>False</b>');
+		printf('&nbsp;&nbsp;&nbsp;&nbsp; <b>(Add Link to the Image.)</b>');
+		
+	?><script type="text/javascript"><?php
+		if($this->options['link']=='yes'){?>
+			document.getElementById("link").checked = true; 
+		<?php } else if($this->options['link']=='no') { ?>
+			document.getElementById("link1").checked = true; <?php } ?>
+	</script>
+	<?php	
     }
+	
+	
+	
+	
 }
 
 if( is_admin() )
     $my_settings_page = new Responsiveimageslidersetting();
+	
+	

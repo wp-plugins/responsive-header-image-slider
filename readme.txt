@@ -25,6 +25,8 @@ To use this plugin just copy and past this code in to your header.php file or te
 You can also use this image slider inside your page with following shortcode <code>[sp_responsiveslider limit="-1"] </code>.
 
 = Added new Features =
+* Slide and fade effect under setting
+* New Setting Page 
 * Add custom link to image
 * Enable Or Disable custom link from setting 
 
@@ -65,6 +67,13 @@ You can also display this Image slider inside your page with following shortcode
 
 == Changelog ==
 
+= 1.3 =
+* Added Slide and Fade effect option
+* Added New setting options
+
+= 1.2 =
+* Fixed some bugs
+
 = 1.1 =
 * Add custom link to image
 * Enable Or Disable custom link from setting 
@@ -77,6 +86,14 @@ You can also display this Image slider inside your page with following shortcode
 
 
 == Upgrade Notice ==
+
+= 1.3 =
+* Added Slide and Fade effect option
+* Added New setting options
+
+= 1.2 =
+* Fixed some bugs
+
 = 1.1 =
 * Add custom link to image
 * Enable Or Disable custom link from setting 
