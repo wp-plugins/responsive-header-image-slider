@@ -151,14 +151,7 @@ function rsris_link_save( $post_id )
     if ( !wp_verify_nonce( $_POST['rsris_slide_link_box_nounce'], plugin_basename( __FILE__ ) ) )
         return; 
      
-    // if our current user can't edit this post, bail  
-    if( !current_user_can( 'edit_post' ) ) return; 
-
-    if( isset( $_POST['rsris_slide_link'] ) )  
-        update_post_meta( $post_id, 'rsris_slide_link', wp_kses( $_POST['rsris_slide_link']) );
-
-    if( isset( $_POST['rsris_slide_embed'] ) )  
-        update_post_meta( $post_id, 'rsris_slide_embed', wp_kses( $_POST['rsris_slide_embed']) );
+  
 
 }
 
