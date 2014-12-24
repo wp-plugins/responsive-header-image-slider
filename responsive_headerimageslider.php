@@ -151,7 +151,10 @@ function rsris_link_save( $post_id )
     if ( !wp_verify_nonce( $_POST['rsris_slide_link_box_nounce'], plugin_basename( __FILE__ ) ) )
         return; 
      
-  
+    // if our current user can't edit this post, bail  
+    if( !current_user_can( 'edit_post' ) ) return; 
+
+   update_post_meta($post_id, 'rsris_slide_link', $_POST['rsris_slide_link']);
 
 }
 
@@ -318,30 +321,6 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
 		} else { $paginationtrue = $pagination;
 		}
 		
-		if ($slider_pagination_effect == '') 
-		{
-			$slider_pagination_effect_def = 'slide';
-		} else { $slider_pagination_effect_def = $slider_pagination_effect;
-		}
-		
-		if ($slidernavigation == '') 
-		{
-			$slidernavigation_def = 'true';
-		} else { $slidernavigation_def = $slidernavigation;
-		}
-		
-		if ($play_effect == '')
-		{
-			$play_effect_def = 'slide';
-		} else { $play_effect_def = $play_effect;
-		}
-		
-		if ($slidernavigationeffect == '') 
-		{
-			$slidernavigationeffect_def = 'slide';
-		} else { $slidernavigationeffect_def = $slidernavigationeffect;
-		}
-		
 		
 	
 	
@@ -358,7 +337,7 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
           auto: <?php echo $auto_play_load_def; ?>,
           interval: <?php echo $autoplaydefultspeed; ?>,
           swap: true,
-		  effect: "<?php echo $play_effect_def; ?>"
+		  effect: "<?php echo $play_effect; ?>"
         },
       effect: { 
 		 slide: {       
@@ -366,18 +345,23 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
       }
     },
 	navigation: {
-      active: <?php echo $slidernavigation_def; ?>,
-	  effect: "<?php echo $slidernavigationeffect_def; ?>"
+      active: <?php echo $slidernavigation; ?>,
+	  effect: "<?php echo $slidernavigationeffect; ?>"
 	  },
         
 	pagination: {
       active: <?php echo $paginationtrue; ?>,
-	   effect: "<?php echo $slider_pagination_effect_def; ?>"
+	   effect: "<?php echo $slider_pagination_effect; ?>"
 	  
     }
-   }); 
- });
-</script>
+
+      });
+	  
+	
+    });
+	
+
+	</script>
 	<?php
 	}
 add_action('wp_head', 'sp_responsiveslider_script'); 
