@@ -3,7 +3,7 @@
 Plugin Name: SP Responsive header image slider
 Plugin URL: http://sptechnolab.com
 Description: A simple Responsive header image slider
-Version: 1.3
+Version: 2.0
 Author: SP Technolab
 Author URI: http://sptechnolab.com
 Contributors: SP Technolab
@@ -272,8 +272,9 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
 	$autoplayspeed = $respslideroptionadmin['auto_speed'];	
 		
 		
-		$pagination = $respslideroptionadmin['pagination']; 
-		$slider_pagination_effect = $respslideroptionadmin['slider_pagination_effect'];
+	$pagination = $respslideroptionadmin['pagination']; 
+	$slider_pagination_effect = $respslideroptionadmin['slider_pagination_effect'];
+	$slider_common_effect = $respslideroptionadmin['Slider_common_effect'];
 		
 		if ($sliderwidth == '' )
 		{
@@ -321,6 +322,34 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
 		} else { $paginationtrue = $pagination;
 		}
 		
+		if ($slidernavigationslide == '') 
+		{
+			$slidernavigationslidetrue = 'true';
+		} else { $slidernavigationslidetrue = $slidernavigationslide;
+		}
+		
+		if ($slidernavigationeffect == '') 
+		{
+			$slidernavigationeffectmain = 'slide';
+		} else { $slidernavigationeffectmain = $slidernavigationeffect;
+		}
+		
+		if ($slider_pagination_effect == '') 
+		{
+			$slider_pagination_effectside = 'slide';
+		} else { $slider_pagination_effectside = $slider_pagination_effect;
+		}
+		if ($play_effect == '') 
+		{
+			$play_effectside = 'slide';
+		} else { $play_effectside = $play_effect;
+		}
+			if ($slider_common_effect == '') 
+		{
+			$slider_common_effectslide = 'slide';
+		} else { $slider_common_effectslide = $slider_common_effect;
+		}
+		
 		
 	
 	
@@ -328,6 +357,7 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
 	<script type="text/javascript">
 	
 	 jQuery(function() {
+	
       jQuery('#slides').slidesjs({
         width: <?php echo $sliderdefultwidth ; ?>,
         height: <?php echo $sliderdefultheight ; ?>,
@@ -337,21 +367,21 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
           auto: <?php echo $auto_play_load_def; ?>,
           interval: <?php echo $autoplaydefultspeed; ?>,
           swap: true,
-		  effect: "<?php echo $play_effect; ?>"
+		  effect: "<?php echo $play_effectside; ?>"
         },
       effect: { 
-		 slide: {       
+		 <?php echo $slider_common_effectslide ; ?>: {     
         speed: <?php echo $slidedefultspeed; ?>          
       }
     },
 	navigation: {
-      active: <?php echo $slidernavigation; ?>,
-	  effect: "<?php echo $slidernavigationeffect; ?>"
+      active: <?php echo $slidernavigationslidetrue; ?>,
+	  effect: "<?php echo $slidernavigationeffectmain; ?>"
 	  },
         
 	pagination: {
       active: <?php echo $paginationtrue; ?>,
-	   effect: "<?php echo $slider_pagination_effect; ?>"
+	   effect: "<?php echo $slider_pagination_effectside; ?>"
 	  
     }
 
@@ -526,6 +556,14 @@ add_settings_field(
             'setting_section_id' // Section           
         );
         
+		 add_settings_field(
+            'Slider_common_effect', // ID
+            'Slider Effect', // Title 
+            array( $this, 'Slider_common_effect_callback' ), // Callback
+            'responsive-slider-setting-admin', // Page
+            'setting_section_id' // Section           
+        );   
+		
        add_settings_field(
             'slide_speed', // ID
             'Transition Speed Between Image', // Title 
@@ -586,6 +624,10 @@ add_settings_field(
 		
 		 if( isset( $input['auto_speed'] ) )
             $new_input['auto_speed'] = sanitize_text_field( $input['auto_speed'] );
+			
+		if( isset( $input['Slider_common_effect'] ) )
+            $new_input['Slider_common_effect'] = sanitize_text_field( $input['Slider_common_effect'] );     		
+			
        if( isset( $input['slide_speed'] ) )
             $new_input['slide_speed'] = sanitize_text_field( $input['slide_speed'] );     	
 			
@@ -644,7 +686,8 @@ add_settings_field(
         );
 		printf(' &nbsp;&nbsp;&nbsp;&nbsp;<b>(Next and previous button settings)</b>');
 		
-	?><script type="text/javascript"><?php
+	
+   	?><script type="text/javascript"><?php
 		if($this->options['slider_navigation']=='true'){?>
 			document.getElementById("slider_navigation").checked = true; 
 		<?php } else if($this->options['slider_navigation']=='false') { ?>
@@ -662,7 +705,8 @@ add_settings_field(
         );
 		printf(' &nbsp;&nbsp;&nbsp;&nbsp; <b>(Effect for Navigation)</b>');
 		
-	?><script type="text/javascript"><?php
+	
+    ?><script type="text/javascript"><?php
 		if($this->options['slider_navigation_effect']=='slide'){?>
 			document.getElementById("slider_navigation_effect").checked = true; 
 		<?php } else if($this->options['slider_navigation_effect']=='fade') { ?>
@@ -680,7 +724,7 @@ add_settings_field(
         );
 		printf('&nbsp;&nbsp;&nbsp;&nbsp; <b>(Pagination settings)</b>');
 		
-	?><script type="text/javascript"><?php
+		?><script type="text/javascript"><?php
 		if($this->options['pagination']=='true'){?>
 			document.getElementById("pagination").checked = true; 
 		<?php } else if($this->options['pagination']=='false') { ?>
@@ -698,7 +742,8 @@ add_settings_field(
         );
 		printf('&nbsp;&nbsp;&nbsp;&nbsp; <b>(Effect for Pagination)</b>');
 		
-	?><script type="text/javascript"><?php
+	
+    ?><script type="text/javascript"><?php
 		if($this->options['slider_pagination_effect']=='slide'){?>
 			document.getElementById("slider_pagination_effect").checked = true; 
 		<?php } else if($this->options['slider_pagination_effect']=='fade') { ?>
@@ -718,14 +763,15 @@ add_settings_field(
         );
 		printf('&nbsp;&nbsp;&nbsp;&nbsp; <b>(Play and stop button setting.)</b>');
 		
-	?><script type="text/javascript"><?php
+	
+    ?><script type="text/javascript"><?php
 		if($this->options['auto_play']=='true'){?>
 			document.getElementById("auto_play").checked = true; 
 		<?php } else if($this->options['auto_play']=='false') { ?>
 			document.getElementById("auto_play1").checked = true; <?php } ?>
 	</script>
 	<?php	
-    }  
+    }    
 	
 		public function auto_play_load_callback() 
     {
@@ -736,7 +782,8 @@ add_settings_field(
         );
 		printf('&nbsp;&nbsp;&nbsp;&nbsp; <b>(Start playing the slideshow on load)</b>');
 		
-	?><script type="text/javascript"><?php
+
+    ?><script type="text/javascript"><?php
 		if($this->options['auto_play_load']=='true'){?>
 			document.getElementById("auto_play_load").checked = true; 
 		<?php } else if($this->options['auto_play_load']=='false') { ?>
@@ -754,7 +801,8 @@ add_settings_field(
         );
 		printf('&nbsp;&nbsp;&nbsp;&nbsp; <b>(Play effect setting.)</b>');
 		
-	?><script type="text/javascript"><?php
+	
+   ?><script type="text/javascript"><?php
 		if($this->options['play_effect']=='slide'){?>
 			document.getElementById("play_effect").checked = true; 
 		<?php } else if($this->options['play_effect']=='fade') { ?>
@@ -775,6 +823,28 @@ add_settings_field(
     }
 	
 	
+
+	
+		public function Slider_common_effect_callback() 
+    {
+        printf(
+            '<input type="radio" id="Slider_common_effect" name="responsiveslider_option[Slider_common_effect]" value="slide" /> Slide 
+			<input type="radio" id="Slider_common_effect1" name="responsiveslider_option[Slider_common_effect]" value="fade"  /> Fade' ,
+            isset( $this->options['Slider_common_effect'] ) ? esc_attr( $this->options['Slider_common_effect']) : ''
+        );
+		printf('&nbsp;&nbsp;&nbsp;&nbsp; <b>(Slider effect setting)</b>');
+		
+		
+	
+    ?><script type="text/javascript"><?php
+		if($this->options['Slider_common_effect']=='slide'){?>
+			document.getElementById("Slider_common_effect").checked = true; 
+		<?php } else if($this->options['Slider_common_effect']=='fade') { ?>
+			document.getElementById("Slider_common_effect1").checked = true; <?php } ?>
+	</script>
+	<?php	
+    }
+	
 	public function slide_speed_callback()
     {
         printf(
@@ -793,7 +863,8 @@ add_settings_field(
         );
 		printf('&nbsp;&nbsp;&nbsp;&nbsp; <b>(Add Link to the Image.)</b>');
 		
-	?><script type="text/javascript"><?php
+	
+    ?><script type="text/javascript"><?php
 		if($this->options['link']=='yes'){?>
 			document.getElementById("link").checked = true; 
 		<?php } else if($this->options['link']=='no') { ?>
