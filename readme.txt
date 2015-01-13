@@ -68,6 +68,9 @@ You can also display this Image slider inside your page with following shortcode
 
 == Changelog ==
 
+= 2.0.1 =
+* Fixed navigation ture OR false setting
+
 = 2.0 =
 * Fixed some bugs
 
@@ -90,6 +93,9 @@ You can also display this Image slider inside your page with following shortcode
 
 
 == Upgrade Notice ==
+
+= 2.0.1 =
+* Fixed navigation ture OR false setting
 
 = 2.0 =
 * Fixed some bugs

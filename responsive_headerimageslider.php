@@ -3,7 +3,7 @@
 Plugin Name: SP Responsive header image slider
 Plugin URL: http://sptechnolab.com
 Description: A simple Responsive header image slider
-Version: 2.0
+Version: 2.0.1
 Author: SP Technolab
 Author URI: http://sptechnolab.com
 Contributors: SP Technolab
@@ -322,10 +322,10 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
 		} else { $paginationtrue = $pagination;
 		}
 		
-		if ($slidernavigationslide == '') 
+		if ($slidernavigation == '') 
 		{
 			$slidernavigationslidetrue = 'true';
-		} else { $slidernavigationslidetrue = $slidernavigationslide;
+		} else { $slidernavigationslidetrue = $slidernavigation;
 		}
 		
 		if ($slidernavigationeffect == '') 
