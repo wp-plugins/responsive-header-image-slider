@@ -25,7 +25,7 @@ To use this plugin just copy and past this code in to your header.php file or te
 You can also use this image slider inside your page with following shortcode <code>[sp_responsiveslider limit="-1"] </code>.
 
 = Installation help and support =
-* Please check installation help on our website. [Installation help and support] (http://wponlinesupport.com/plugin-installation-support/) 
+* Please check installation help on our website. View [Installation help and support](http://wponlinesupport.com/plugin-installation-support/) 
 * Get Free installation and setup on your website.
 
 = Added new Features =
