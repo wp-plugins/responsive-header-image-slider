@@ -17,8 +17,8 @@ This plugin add a Responsive header image slider in your website. Also you can a
 View [Demo](http://wordpushplugins.in/header-image-slider/) for additional information.
 
 = Installation help and support =
-* Please check installation help on our website. View [Installation help and support](http://wponlinesupport.com/plugin-installation-support/) 
-* Get Free installation and setup on your website.
+* Please check [installation help](http://wponlinesupport.com/plugin-installation-support/)  on our website. View [Installation help and support](http://wponlinesupport.com/plugin-installation-support/) 
+* Get [Free installation and setup](http://wponlinesupport.com/plugin-installation-support/)  on your website.
 
 
 The plugin adds a "Responsive header image slider" tab to your admin menu, which allows you to enter Image Title and image items just as you would regular posts.
