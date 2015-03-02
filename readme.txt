@@ -25,9 +25,11 @@ The plugin adds a "Responsive header image slider" tab to your admin menu, which
 
 Also added "Responsive slider Settings " page under "Setting-> Responsive slider Settings". thsese setting include slider width, slider height, Auto Play button, Auto play speed
 
-To use this plugin just copy and past this code in to your header.php file or template file <code><div class="headerslider"> <?php echo do_shortcode('[sp_responsiveslider limit="-1"]'); ?></div></code>
+To use this plugin just copy and past this code in to your header.php file or template file 
+<code><div class="headerslider"> <?php echo do_shortcode('[sp_responsiveslider limit="-1"]'); ?></div></code>
 
-You can also use this image slider inside your page with following shortcode <code>[sp_responsiveslider limit="-1"] </code>.
+You can also use this image slider inside your page with following shortcode 
+<code>[sp_responsiveslider limit="-1"] </code>.
 
 = Added new Features =
 * Slide and fade effect under setting
