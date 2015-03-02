@@ -15,7 +15,11 @@ A quick, easy way to add an Responsive header image slider OR Responsive image s
 This plugin add a Responsive header image slider in your website. Also you can add Responsive image slider page and mobile tuch slider in to your wordpress website.
 
 View [Demo](http://wordpushplugins.in/header-image-slider/) for additional information.
-View [Installation help and support](http://wponlinesupport.com/plugin-installation-support/) 
+
+= Installation help and support =
+* Please check installation help on our website. View [Installation help and support](http://wponlinesupport.com/plugin-installation-support/) 
+* Get Free installation and setup on your website.
+
 
 The plugin adds a "Responsive header image slider" tab to your admin menu, which allows you to enter Image Title and image items just as you would regular posts.
 
@@ -24,10 +28,6 @@ Also added "Responsive slider Settings " page under "Setting-> Responsive slider
 To use this plugin just copy and past this code in to your header.php file or template file <code><div class="headerslider"> <?php echo do_shortcode('[sp_responsiveslider limit="-1"]'); ?></div></code>
 
 You can also use this image slider inside your page with following shortcode <code>[sp_responsiveslider limit="-1"] </code>.
-
-= Installation help and support =
-* Please check installation help on our website. View [Installation help and support](http://wponlinesupport.com/plugin-installation-support/) 
-* Get Free installation and setup on your website.
 
 = Added new Features =
 * Slide and fade effect under setting
