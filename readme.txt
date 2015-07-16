@@ -14,8 +14,6 @@ A quick, easy way to add an Responsive header image slider OR Responsive image s
 
 This plugin add a Responsive header image slider in your website. Also you can add Responsive image slider page and mobile tuch slider in to your wordpress website.
 
-View [Demo](http://wordpushplugins.in/header-image-slider/) for additional information.
-
 = Installation help and support =
 * Please check [installation help](http://wponlinesupport.com/plugin-installation-support/)  on our website. View [Installation help and support](http://wponlinesupport.com/plugin-installation-support/) 
 * Get [Free installation and setup](http://wponlinesupport.com/plugin-installation-support/)  on your website.
