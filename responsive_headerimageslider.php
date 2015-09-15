@@ -1,12 +1,12 @@
 <?php
 /*
-Plugin Name: SP Responsive header image slider
-Plugin URL: http://sptechnolab.com
+Plugin Name: WP Responsive header image slider
+Plugin URL: http://wponlinesupport.com
 Description: A simple Responsive header image slider
-Version: 2.0.1
-Author: SP Technolab
-Author URI: http://sptechnolab.com
-Contributors: SP Technolab
+Version: 2.1
+Author: WP Online Support
+Author URI: http://wponlinesupport.com
+Contributors: WP Online Support
 */
 /*
  * Register CPT sp_responsiveslider
@@ -50,115 +50,51 @@ function sp_responsiveslider_setup_post_types() {
 }
 add_action('init', 'sp_responsiveslider_setup_post_types');
 
-
-add_action( 'admin_init', 'rsris_add_metaboxes' );
-function rsris_add_metaboxes() {
-
-  // This will register our metabox for all post types
-  $post_types = get_post_types();
-  // This will remove the meta box from our slides post type
-  unset($post_types['rsris_slides']);
-      foreach ( $post_types as $post_type ){
-        // Box for your posts for inserting your slider element.
-	 add_meta_box('rsris_slide_link_box', 'LINK URL', 'rsris_slide_link_box', $post_type , 'normal', 'core');
-        //add_meta_box('rsris_multipeselect_metabox', 'LINK URL', 'rsris_multipeselect_metabox', $post_type, 'normal', 'core');
-      }
-  // Box for inserting the link the slide should link to.
-  add_meta_box('rsris_slide_link_box', 'Slide link', 'rsris_slide_link_box', 'rsris_slides', 'normal', 'core');
-  add_meta_box('rsris_slide_embed_box', 'Youtube Share link', 'rsris_slide_embed_box', 'rsris_slides', 'normal', 'core');
-}
- 
-// Our metabox for choosing the slides
-function rsris_multipeselect_metabox() {
-   global $post;
-   
-   wp_nonce_field( plugin_basename( __FILE__ ), 'rsris_ms_metabox_nonce' );
-   
-   $rsris_ms_posts = get_posts( array(
-   'post_type' => 'rsris_slides',
-   'numberposts' => -1
-
-   ));
-   $rsris_slides = get_post_meta( $post->ID, 'rsris_slide', true );
-
-   $rsris_ms_output = '<div class="rsris-select-wrapper"><div class="rsris-select-left"><div class="rsris-search-field-wrapper">Link Url:<input type="text" id="rsris-search-field" placeholder="http://"></div><ul class="rsris-items">';
-   
-   $rsris_ms_output .= '</ul></div></div>';
-   $rsris_ms_output .= '<div style="clear:both;"></div>';
-   echo $rsris_ms_output;
-}
- 
-// Save data from meta box
-add_action('save_post', 'rsris_checkbox_metabox_save');
-function rsris_checkbox_metabox_save($post_id) {
-  // verify nonce
-  if ( !wp_verify_nonce( $_POST['rsris_ms_metabox_nonce'], plugin_basename( __FILE__ ) ) )
-        return;
- 
-  // check autosave
-  if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
-        return;
- 
-  // check permissions
-  if (!current_user_can('edit_post', $post_id))
-    return;
- 
-        $old['rsris_slide'] = get_post_meta( $post_id, 'rsris_slide', true );
-        $new['rsris_slide'] = $_POST['rsris_slide'];
-       
-        if ( $new['rsris_slide'] && $new['rsris_slide'] != $old['rsris_slide'] ) {
-          update_post_meta($post_id, 'rsris_slide', $new['rsris_slide']);
-        } elseif ( '' == $new['rsris_slide'] && $old['rsris_slide'] ) {
-          delete_post_meta($post_id, 'rsris_slide', $old['rsris_slide']);
-        }
+/* Include style and script */
+add_action( 'wp_enqueue_scripts','style_rsris_css_script' );
+function style_rsris_css_script() {
+    wp_enqueue_style( 'respslidercss',  plugin_dir_url( __FILE__ ). 'css/responsiveimgslider.css' );
+    wp_enqueue_script( 'respsliderjs', plugin_dir_url( __FILE__ ) . 'js/jquery.slides.min.js', array( 'jquery' ));
 }
 
-
-/**
-* Register meta boxes for inserting a links and embeds
-*/
-function rsris_slide_link_box() {
-  global $post;
-  $rsris_slide_link = get_post_meta( $post->ID, 'rsris_slide_link', true );
-  
-  wp_nonce_field( plugin_basename( __FILE__ ), 'rsris_slide_link_box_nounce' );
-  
-  $rsris_slide_link_output .= '<input type="text" name="rsris_slide_link" id="rsris_slide_link" class="widefat" value="'.$rsris_slide_link.'" />';
-  	echo $rsris_slide_link_output;
+/* Custom meta box for slider link */
+function rsris_add_meta_box() {
+		add_meta_box('custom-metabox',__( 'LINK URL', 'link_textdomain' ),'rsris_box_callback','sp_responsiveslider');
 }
-
-function rsris_slide_embed_box() {
-  global $post;
-  $rsris_slide_embed = get_post_meta( $post->ID, 'rsris_slide_embed', true );
-  
-  wp_nonce_field( plugin_basename( __FILE__ ), 'rsris_slide_embed_box_nounce' );
-  
-  $rsris_slide_embed_output = rsris_embed_video( $post->ID, 260, 120);
-  $rsris_slide_embed_output .= '<label for="rsris_slide_embed"><span class="howto">Copy and paste the link to your YouTube video</span></label>';
-  $rsris_slide_embed_output .= '<input type="text" name="rsris_slide_embed" id="rsris_slide_embed" class="widefat" value="'.$rsris_slide_embed.'" />';
-  echo $rsris_slide_embed_output;
+add_action( 'add_meta_boxes', 'rsris_add_meta_box' );
+function rsris_box_callback( $post ) {
+	wp_nonce_field( 'rsris_save_meta_box_data', 'rsris_meta_box_nonce' );
+	$value = get_post_meta( $post->ID, 'rsris_slide_link', true );
+	echo '<input type="url" id="rsris_slide_link" name="rsris_slide_link" value="' . esc_attr( $value ) . '" size="25" />';
 }
+function rsris_save_meta_box_data( $post_id ) {
+	if ( ! isset( $_POST['rsris_meta_box_nonce'] ) ) {
+		return;
+	}
+	if ( ! wp_verify_nonce( $_POST['rsris_meta_box_nonce'], 'rsris_save_meta_box_data' ) ) {
+		return;
+	}
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+	if ( isset( $_POST['post_type'] ) && 'sp_responsiveslider' == $_POST['post_type'] ) {
 
+		if ( ! current_user_can( 'edit_page', $post_id ) ) {
+			return;
+		}
+	} else {
 
-
-add_action( 'save_post', 'rsris_link_save' );  
-function rsris_link_save( $post_id )  
-{  
-    // Bail if we're doing an auto save  
-    if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return; 
-     
-    // verify nonce
-    if ( !wp_verify_nonce( $_POST['rsris_slide_link_box_nounce'], plugin_basename( __FILE__ ) ) )
-        return; 
-     
-    // if our current user can't edit this post, bail  
-    if( !current_user_can( 'edit_post' ) ) return; 
-
-   update_post_meta($post_id, 'rsris_slide_link', $_POST['rsris_slide_link']);
-
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+	}
+	if ( ! isset( $_POST['rsris_slide_link'] ) ) {
+		return;
+	}
+	$link_data = sanitize_text_field( $_POST['rsris_slide_link'] );
+	update_post_meta( $post_id, 'rsris_slide_link', $link_data );
 }
-
-
+add_action( 'save_post', 'rsris_save_meta_box_data' );
 /*
  * Add [sp_responsiveslider limit="-1"] shortcode
  *
@@ -175,11 +111,8 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
 	} else {
 		$posts_per_page = '-1';
 	}
-	
 	ob_start();
-
 	// Create the Query
-
 	$post_type 		= 'sp_responsiveslider';
 	$orderby 		= 'post_date';
 	$order 			= 'DESC';
@@ -195,27 +128,23 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
 	//Get post type count
 	$post_count = $query->post_count;
 	$i = 1;
-	
-	// Displays Custom post info
-	
-	
-	
 	if( $post_count > 0) :
 	?>
-	
 	  <div id="slides">
-	<?php
-		
+	<?php	
 		// Loop 
-		while ($query->have_posts()) : $query->the_post();
-
-		?>
+		while ($query->have_posts()) : $query->the_post();?>
 		<?php $respslideroption = 'responsiveslider_option';
 	$respslideroptionadmin = get_option( $respslideroption, $default ); 
 	$link = $respslideroptionadmin['link'];  
 		 	if ($link == '' || $link == 'yes' )
-		{?>
-		<a href="<?php echo get_post_meta( get_the_ID(),'rsris_slide_link', true ) ?>" target="_blank">
+		{
+		$url = get_post_meta( get_the_ID(),'rsris_slide_link', true );
+		if (!preg_match("~^(?:f|ht)tps?://~i", $url)) {
+        	$url = "http://" . $url;
+    		}
+		?>
+		<a href="<?php echo $url;?>">
 		<?php } ?>
 		<img src="<?php if (has_post_thumbnail( $post->ID ) ): ?>
 				<?php $image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'single-post-thumbnail' ); 
@@ -239,21 +168,11 @@ function sp_responsiveslider_shortcode( $atts, $content = null ) {
 	endif;
 	// Reset query to prevent conflicts
 	wp_reset_query();
-	
 	?>
-	
 	<?php
-	
 	return ob_get_clean();
-
 }
 	add_shortcode("sp_responsiveslider", "sp_responsiveslider_shortcode");
-
-	wp_register_style( 'respslidercss', plugin_dir_url( __FILE__ ) . 'css/responsiveimgslider.css' );
-	wp_register_script( 'respsliderjs', plugin_dir_url( __FILE__ ) . 'js/jquery.slides.min.js', array( 'jquery' ) );	
-
-	wp_enqueue_style( 'respslidercss' );
-	wp_enqueue_script( 'respsliderjs' );
 
 	function sp_responsiveslider_script() {
 	

@@ -1,9 +1,9 @@
-=== SP Responsive header image slider ===
-Contributors: sptechnolab, anoopranawat 
+=== WP Responsive header image slider ===
+Contributors: wponlinesupport, anoopranawat 
 Donate link: http://www.slidesjs.com/
 Tags: responsive image slider, mobile tuch image slider, image slider, responsive header image slider, header image slider, responsive banner slider, banner slider, responsive header banner slider, header banner slider, responsive slideshow,  slideshow, custom post type, header image slideshow
 Requires at least: 3.5
-Tested up to: 4.1
+Tested up to: 4.3
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -13,6 +13,8 @@ A quick, easy way to add an Responsive header image slider OR Responsive image s
 == Description ==
 
 This plugin add a Responsive header image slider in your website. Also you can add Responsive image slider page and mobile tuch slider in to your wordpress website.
+
+View [DEMO](http://demo.wponlinesupport.com/image-slider-demo/) for additional information.
 
 = Installation help and support =
 * Please check [installation help](http://wponlinesupport.com/plugin-installation-support/)  on our website. View [Installation help and support](http://wponlinesupport.com/plugin-installation-support/) 
@@ -73,6 +75,9 @@ You can also display this Image slider inside your page with following shortcode
 
 == Changelog ==
 
+= 2.1 =
+* Fixed some bugs
+
 = 2.0.1 =
 * Fixed navigation ture OR false setting
 
@@ -98,6 +103,9 @@ You can also display this Image slider inside your page with following shortcode
 
 
 == Upgrade Notice ==
+
+= 2.1 =
+* Fixed some bugs
 
 = 2.0.1 =
 * Fixed navigation ture OR false setting
