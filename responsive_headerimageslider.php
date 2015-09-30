@@ -42,6 +42,7 @@ function sp_responsiveslider_setup_post_types() {
 		'capability_type' 	=> 'post',
 		'has_archive' 		=> true,
 		'hierarchical' 		=> false,
+		'menu_icon'   => 'dashicons-format-gallery',
 		'supports' => array('title','thumbnail')
 		
 	);
