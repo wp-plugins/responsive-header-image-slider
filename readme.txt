@@ -17,7 +17,7 @@ This plugin add a Responsive header image slider in your website. Also you can a
 View [DEMO](http://demo.wponlinesupport.com/image-slider-demo/) for additional information.
 
 = Installation help and support =
-* Please check [installation help](http://wponlinesupport.com/plugin-installation-support/)  on our website. View [Installation help and support](http://wponlinesupport.com/plugin-installation-support/) 
+* Please check [Installation and Document](http://wponlinesupport.com/document/document-wp-responsive-header-image-slider/)  on our website.
 * Get [Free installation and setup](http://wponlinesupport.com/plugin-installation-support/)  on your website.
 
 
